@@ -1,0 +1,27 @@
+.Homepage_image{
+    width : 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    opacity: 0.5;
+}
+.text{
+    font-size: 20vh;
+    color: black;
+}
+.text2{
+    font-size: 12vh;
+    color: rgb(83, 83, 83);
+}
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+body{
+  margin: 0;
+  padding: 0;
+  /* background-color: aqua; */
+  /* background-repeat: no-repeat;
+  background-attachment: fixed; */
+}
