@@ -107,7 +107,9 @@ def search_api():
     
 @app.route('/app', methods=['GET'])
 def app_page():
-    return render_template('app.html')
+    items = [{'image': 'http://assets.myntassets.com/v1/images/style/properties/9c1b19682ecf926c296f520d5d6e0972_images.jpg', 'descriptions': 'A product here'}]
+
+    return render_template('app.html', items = items)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const radius = 250;
 
     // Render mind map
-    function renderMindMap() {
+    function renderMindMap(searchResults) {
         // Clear previous content
         group.innerHTML = '';
 
