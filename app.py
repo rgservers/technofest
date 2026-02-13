@@ -114,13 +114,31 @@ def safe_page():
 @login_required
 def search_api():
     query = request.args.get('query')
+    gender = request.args.get('gender')
+    masterCategory = request.args.get('masterCategory')
+    subCategory = request.args.get('subCategory')
+    articleType = request.args.get('articleType')
+    baseColour = request.args.get('baseColour')
+    season = request.args.get('season')
+    year = request.args.get('year')
+    usage = request.args.get('usage')
+
     if not query:
         return jsonify({"error": "Query parameter is required"}), 400
-
-    results = [
-        {"productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer"}
-    ]
-    return find_relevant(query)
+    ip = request.remote_addr
+    if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
+        ip = '202.43.122.205'  # Use a public IP for testing local requests
+    try:
+        response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
+        data = response.json()
+        country = data.get('country')
+        state = data.get('regionName')
+    except:
+        country = 'Unknown'
+        state = 'Unknown'
+    finalquery = f"{query} from {country} {state}, for a {gender} in {masterCategory} - {subCategory}, article type: {articleType}, color: {baseColour}, season: {season}, year: {year}, usage: {usage}"
+    print(finalquery)
+    return find_relevant(finalquery)
     
 @app.route('/app', methods=['GET'])
 def app_page():
@@ -128,7 +146,7 @@ def app_page():
 
     ip = request.remote_addr
     if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
-        ip = '8.8.8.8'  # Use a public IP for testing local requests
+        ip = '202.43.122.205'  # Use a public IP for testing local requests
     try:
         response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
         data = response.json()
