@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - FashionFinder</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        form { max-width: 600px; margin: auto; }
+        input { display: block; margin: 10px 0; padding: 8px; width: 100%; }
+        button { padding: 10px; background: #333; color: white; border: none; cursor: pointer; }
+        .results { margin-top: 20px; }
+        .item { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Search Fashion Items</h1>
+    <p>Welcome, {{ current_user.id }}! <a href="{{ url_for('logout') }}">Logout</a></p>
+    <form method="POST">
+        <input type="text" name="query" placeholder="Describe what you're looking for..." required>
+        <button type="submit">Search</button>
+    </form>
+    {% if results %}
+    <div class="results">
+        <h2>Results:</h2>
+        {% for item in results %}
+        <div class="item">
+            <h3>{{ item.productDisplayName }}</h3>
+            <p>Category: {{ item.masterCategory }} - {{ item.subCategory }}</p>
+            <p>Color: {{ item.baseColour }}, Season: {{ item.season }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <footer>
+        <p>&copy; 2024 FashionFinder. All rights reserved.</p>
+        <p> Made by proud sureshites sssismee</p>
+    </footer>
+</body>
+</html>
