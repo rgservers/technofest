@@ -6,6 +6,20 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 from vector_organizer import find_relevant
 import vector_organizer
+import requests
+import logging
+import os
+
+# Set up logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 app = flask.Flask(__name__)
 app.secret_key = 'proudsureshite'
@@ -26,7 +40,7 @@ def load_user(user_id):
 
 myclient = pymongo.MongoClient('mongodb://localhost:27017/')
 mydb = myclient['VadaPavFashion']
-col1 = mydb['testdb']
+col1 = mydb['fashion_items']
 users_collection = mydb['users']
 
 @app.route('/', methods=['GET'])
@@ -36,27 +50,41 @@ def home():
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
+    logger.info("Search page accessed")
     results = []
     if request.method == 'POST':
+        logger.debug("Search POST request")
         query = request.form.get('query')
+        logger.debug(f"Search query: {query}")
         if query:
             try:
-                # Get similar item IDs
-                similar_items = find_relevant(query)
-
-                # Fetch full item details for the top similar items
-                item_ids = list(similar_items.keys())[:10]  # Top 10
-                if item_ids:
-                    items = list(col1.find({"id": {"$in": item_ids}}))
-                    # Sort by similarity score
-                    items.sort(key=lambda x: similar_items.get(x['id'], 0), reverse=True)
-                    results = items
+                # Hit the /searchapi endpoint
+                api_url = f"http://localhost:5000/searchapi?query={query}"
+                logger.debug(f"Calling API: {api_url}")
+                response = requests.get(api_url)
+                logger.debug(f"API response status: {response.status_code}")
+                if response.status_code == 200:
+                    api_results = response.json()  # [[id, sim], ...]
+                    logger.info(f"API returned {len(api_results)} results")
+                    item_ids = [item[0] for item in api_results]
+                    if item_ids:
+                        items = list(col1.find({"id": {"$in": item_ids}}))
+                        logger.debug(f"Fetched {len(items)} items from DB")
+                        id_to_item = {item['id']: item for item in items}
+                        results = [id_to_item.get(id, {}) for id, sim in api_results]
+                        logger.info(f"Final results: {len(results)} items")
+                    else:
+                        results = []
+                else:
+                    logger.warning(f"API returned status {response.status_code}")
+                    results = []
             except Exception as e:
-                print(f"Search error: {e}")
-                # Fallback to sample data
-                results = [
-                    {"id": "sample1", "productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer", "gender": "Men"}
-                ]
+                logger.error(f"Search error: {e}")
+                results = []
+        else:
+            logger.warning("No query provided")
+    else:
+        logger.debug("Search GET request")
     return render_template('search.html', results=results)
 
 
@@ -76,8 +104,18 @@ def login():
 
 users_collection = mydb['users']
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
+@app.route('/product/<int:product_id>', methods=['GET'])
+def get_product(product_id):
+    logger.debug(f"Fetching product {product_id}")
+    product = col1.find_one({"id": product_id})
+    if product:
+        # Remove the _id field
+        product.pop('_id', None)
+        logger.debug(f"Product {product_id} found")
+        return jsonify(product)
+    else:
+        logger.warning(f"Product {product_id} not found")
+        return jsonify({"error": "Product not found"}), 404
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -111,8 +149,8 @@ def safe_page():
 
 
 @app.route('/searchapi', methods=['GET'])
-@login_required
 def search_api():
+    logger.info("Search API accessed")
     query = request.args.get('query')
     gender = request.args.get('gender')
     masterCategory = request.args.get('masterCategory')
@@ -122,23 +160,32 @@ def search_api():
     season = request.args.get('season')
     year = request.args.get('year')
     usage = request.args.get('usage')
+    logger.debug(f"Query parameters: query={query}, gender={gender}, masterCategory={masterCategory}, subCategory={subCategory}, articleType={articleType}, baseColour={baseColour}, season={season}, year={year}, usage={usage}")
 
     if not query:
+        logger.warning("Query parameter missing")
         return jsonify({"error": "Query parameter is required"}), 400
     ip = request.remote_addr
+    logger.info(f"User IP for search: {ip}")
     if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
         ip = '202.43.122.205'  # Use a public IP for testing local requests
+        logger.debug(f"Using public IP: {ip}")
     try:
+        logger.debug(f"Fetching geolocation for search")
         response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
         data = response.json()
         country = data.get('country')
         state = data.get('regionName')
-    except:
+        logger.info(f"Search geolocation: Country={country}, State={state}")
+    except Exception as e:
+        logger.error(f"Error in geolocation for search: {e}")
         country = 'Unknown'
         state = 'Unknown'
     finalquery = f"{query} from {country} {state}, for a {gender} in {masterCategory} - {subCategory}, article type: {articleType}, color: {baseColour}, season: {season}, year: {year}, usage: {usage}"
-    print(finalquery)
-    return find_relevant(finalquery)
+    logger.info(f"Final query constructed: {finalquery}")
+    result = find_relevant(finalquery)
+    logger.info(f"Search API returning {len(result)} results")
+    return result
     
 @app.route('/app', methods=['GET'])
 def app_page():
@@ -155,7 +202,7 @@ def app_page():
     except:
         country = 'Unknown'
         state = 'Unknown'
-    return render_template('app.html', items = items, country=country, state=state)
+    return render_template('app.html', items=items, country=country, state=state)
 
 if __name__ == '__main__':
     app.run(debug=True)
