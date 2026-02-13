@@ -1,7 +1,7 @@
 import pymongo
-#import elasticsearch
+import elasticsearch
 import flask
-#import numpy as np
+import numpy as np
 
 mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
 mongo_db = mongo_client["VadaPavFassion"]
