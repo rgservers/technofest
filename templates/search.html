@@ -6,7 +6,42 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Search - FashionFinder</title>
 </head>
+<style>
+.sidenav {
+  height: 100%;
+  width: 30vw;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+</style>
 <body>
+    <nav class="sidebar">
+        <div class="sidenav">
+            <h2>Fashion Finder</h2>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('search') }}">Search</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Clients</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
     <header class="search-header">
         <div class="container">
             <h1 class="search-title">Fashion Finder</h1>

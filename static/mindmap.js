@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const centerY = 400;
     const radius = 250;
 
-    // Render mind map
     function renderMindMap(searchResults) {
         // Clear previous content
         group.innerHTML = '';
@@ -22,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const numItems = searchResults.length;
         const angleStep = (2 * Math.PI) / numItems;
+
+        const identifiers = [];
+        console.log()
 
         // Create nodes
         const nodes = [];
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             nodeGroup.setAttribute('class', 'node');
             nodeGroup.setAttribute('transform', `translate(${x}, ${y})`);
 
-            // Create circle
+            // Circle
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('r', '60');
             circle.setAttribute('fill', getColorForCategory(item.masterCategory));

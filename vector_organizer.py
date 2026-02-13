@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import contextlib
+import heapq
 
 os.environ["TQDM_DISABLE"] = "1"
 logging.getLogger("transformers").setLevel(logging.ERROR)
@@ -21,7 +22,7 @@ def find_relevant(query_text, limit=100):
         "combined_vector": 1,
         "_id": 0
     }
-    results = col1.find({}, projection).limit(limit)  # Limit to prevent loading too much data
+    results = col1.find({}, projection).limit(limit) 
     for doc in results:
         product_id = doc.get("id")
         vector = doc.get("combined_vector")
@@ -41,8 +42,7 @@ def find_relevant(query_text, limit=100):
         similarity = util.cos_sim(embed_1, embed_2).item()
         similarities[product_id] = similarity
 
-    # Return top 10 most similar items
-    return {k: v for k, v in sorted(similarities.items(), key=lambda x: x[1], reverse=True)[:100]}
+    return  heapq.nlargest(100, similarities.items(), key=lambda item: item[1])
 
 
 if __name__ == "__main__":

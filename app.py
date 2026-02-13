@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from vector_organizer import find_relevant
-import requests
+import vector_organizer
 
 app = flask.Flask(__name__)
 app.secret_key = 'proudsureshite'
