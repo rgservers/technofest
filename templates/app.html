@@ -1,56 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {
-  font-family: "Lato", sans-serif;
-}
-
-.sidenav {
-  height: 100%;
-  width: 30vw;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #111;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
-}
-
-.sidenav a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Fashion Items - FashionFinder</title>
 </head>
 <body>
-<div>
-    <div id="mySidenav" class="sidenav">
-        <button onclick=runThis()>Text here</button>
-        <a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Clients</a>
-        <a href="#">Contact</a>
-    </div>
-    {% if items %}
-        {% for item in items %}
-        <div style="height: 15vh; width: 8vw;">
-            <img src = {{item.image}}>
-            <p>{{item.descriptions}}</p>
-        </div>
-</div>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Fashion Finder</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('search') }}">Search</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Clients</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
 
-<script>
-</script>
-   
+        <main class="main-content">
+            <div class="container">
+                <h1>Your Fashion Items</h1>
+                {% if items %}
+                <div class="items-grid">
+                    {% for item in items %}
+                    <div class="item-card">
+                        <img src="{{ item.image }}" alt="{{ item.descriptions }}" class="item-image">
+                        <div class="item-info">
+                            <p>{{ item.descriptions }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No items to display.</p>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Any JavaScript can go here
+    </script>
 </body>
 </html> 
