@@ -1,27 +1,112 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fashon API</title>
+    <title>FashionFinder - Smart Outfit Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 2rem;
+        }
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            background-color: #fff;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .problem {
+            background-color: #ffe6e6;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+        .solution {
+            background-color: #e6ffe6;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+        .cta {
+            text-align: center;
+            padding: 2rem;
+            background-color: #333;
+            color: #fff;
+            border-radius: 8px;
+        }
+        .cta a {
+            color: #fff;
+            text-decoration: none;
+            background-color: #ff6600;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: #fff;
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Fassion made easy API</h1>
-    <p>This API provides access to the Fashion database, which contains information about various fashion items and trends. You can use this API to retrieve data, perform searches, and analyze fashion trends.</p>
-    <h2>Endpoints</h2>
-    <ul>
-        <li><strong>GET /items</strong>: Retrieve a list of all fashion items in the database.</li>
-        <li><strong>GET /items/{id}</strong>: Retrieve details of a specific fashion item by its ID.</li>
-        <li><strong>POST /items</strong>: Add a new fashion item to the database.</li>
-        <li><strong>PUT /items/{id}</strong>: Update details of a specific fashion item by its ID.</li>
-        <li><strong>DELETE /items/{id}</strong>: Remove a specific fashion item from the database by its ID.</li>
-    </ul>
-    <h2>Usage</h2>
-    <p>To use the API, send HTTP requests to the appropriate endpoints with the required parameters and data. The API will respond with JSON-formatted data that you can use in your applications or analyses.</p>
-    <h2>Contact</h2>
-    <p>If you have any questions or need support, please contact us at <a href ="mailto:rishi@rgserver.in"> 
+    <header>
+        <h1>FashionFinder</h1>
+        <p>Revolutionize Your Wardrobe Search</p>
+    </header>
 
-        </a>
+    <div class="container">
+        <section class="hero">
+            <h2>Find the Perfect Outfit in One Search</h2>
+            <p>Match your occasion, season, colors, and sustainability goals effortlessly.</p>
+        </section>
 
+        <section class="problem">
+            <h2>The Problem with Current Fashion Search</h2>
+            <p>Fashion search engines often fail to understand user intent, resulting in irrelevant results, multiple unnecessary purchases, high return rates, and increased textile waste. Users struggle to find outfits that match their occasion, season, color preference, and sustainability goals in a single search. This leads to overconsumption and inefficient fashion choices.</p>
+        </section>
+
+        <section class="solution">
+            <h2>Our Solution</h2>
+            <p>FashionFinder uses advanced AI to understand your unique style preferences and requirements. Our intelligent search engine considers:</p>
+            <ul>
+                <li>Occasion (casual, formal, wedding, etc.)</li>
+                <li>Season and weather</li>
+                <li>Color preferences and palettes</li>
+                <li>Sustainability and ethical factors</li>
+                <li>Your body type and personal style</li>
+            </ul>
+            <p>Get curated outfit suggestions that are perfect for you, reducing waste and saving time.</p>
+        </section>
+
+        <section class="cta">
+            <h2>Ready to Transform Your Fashion Experience?</h2>
+            <p>Start searching smarter today!</p>
+            <a href="/search">Begin Your Search</a>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 FashionFinder. Contact: <a href="mailto:rishi@rgserver.in">rishi@rgserver.in</a></p>
+    </footer>
 </body>
 </html>
