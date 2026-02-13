@@ -86,9 +86,6 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
 
 @app.route('/safe_page')
 @login_required
@@ -111,3 +108,6 @@ def search_api():
 @app.route('/app', methods=['GET'])
 def app_page():
     return render_template('app.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
