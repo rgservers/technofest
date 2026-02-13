@@ -50,6 +50,7 @@ body {
         <main class="main-content">
             <div class="container">
                 <h1>Your Fashion Items</h1>
+                <p>Location: {{ country }}{% if state %}, {{ state }}{% endif %}</p>
                 {% if items %}
                 <div class="items-grid">
                     {% for item in items %}
