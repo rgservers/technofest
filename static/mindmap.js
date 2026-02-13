@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="modal-content">
                 <span class="close-button">&times;</span>
                 <h2>${item.productDisplayName}</h2>
-                ${item.image ? `<img src="${item.image}" alt="${item.productDisplayName}" class="item-image">` : ''}
+                <img src="/fashion-dataset/images/${item.id}.jpg" alt="${item.productDisplayName}" class="item-image" onerror="this.style.display='none'">
                 <div class="item-details">
                     <p><strong>Category:</strong> ${item.masterCategory} - ${item.subCategory}</p>
                     <p><strong>Color:</strong> ${item.baseColour}</p>

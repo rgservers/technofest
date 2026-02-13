@@ -4,6 +4,8 @@ import numpy as np
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from vector_organizer import find_relevant
+import requests
 
 app = flask.Flask(__name__)
 app.secret_key = 'proudsureshite'
@@ -34,13 +36,28 @@ def home():
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
+    results = []
     if request.method == 'POST':
         query = request.form.get('query')
-        results = [
-            {"productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer"}
-        ]
-        return render_template('search.html', results=results)
-    return render_template('search.html')
+        if query:
+            try:
+                # Get similar item IDs
+                similar_items = find_relevant(query)
+
+                # Fetch full item details for the top similar items
+                item_ids = list(similar_items.keys())[:10]  # Top 10
+                if item_ids:
+                    items = list(col1.find({"id": {"$in": item_ids}}))
+                    # Sort by similarity score
+                    items.sort(key=lambda x: similar_items.get(x['id'], 0), reverse=True)
+                    results = items
+            except Exception as e:
+                print(f"Search error: {e}")
+                # Fallback to sample data
+                results = [
+                    {"id": "sample1", "productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer", "gender": "Men"}
+                ]
+    return render_template('search.html', results=results)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -103,13 +120,24 @@ def search_api():
     results = [
         {"productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer"}
     ]
-    return jsonify(results)
+    return find_relevant(query)
     
 @app.route('/app', methods=['GET'])
 def app_page():
     items = [{'image': 'http://assets.myntassets.com/v1/images/style/properties/9c1b19682ecf926c296f520d5d6e0972_images.jpg', 'descriptions': 'A product here'}]
 
-    return render_template('app.html', items = items)
+    ip = request.remote_addr
+    if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
+        ip = '8.8.8.8'  # Use a public IP for testing local requests
+    try:
+        response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
+        data = response.json()
+        country = data.get('country')
+        state = data.get('regionName')
+    except:
+        country = 'Unknown'
+        state = 'Unknown'
+    return render_template('app.html', items = items, country=country, state=state)
 
 if __name__ == '__main__':
     app.run(debug=True)
