@@ -41,9 +41,12 @@ body {
         <a href="#">Clients</a>
         <a href="#">Contact</a>
     </div>
-    <canvas>
-
-    </canvas>
+    {% if items %}
+        {% for item in items %}
+        <div style="height: 15vh; width: 8vw;">
+            <img src = {{item.image}}>
+            <p>{{item.descriptions}}</p>
+        </div>
 </div>
 
 <script>
