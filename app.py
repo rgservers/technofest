@@ -34,13 +34,13 @@ def home():
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
+    results = []
     if request.method == 'POST':
         query = request.form.get('query')
         results = [
             {"productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer"}
         ]
-        return render_template('search.html', results=results)
-    return render_template('search.html')
+    return render_template('search.html', results=results)
 
 
 @app.route('/login', methods=['GET', 'POST'])
