@@ -114,6 +114,15 @@ def safe_page():
 @login_required
 def search_api():
     query = request.args.get('query')
+    gender = request.args.get('gender')
+    masterCategory = request.args.get('masterCategory')
+    subCategory = request.args.get('subCategory')
+    articleType = request.args.get('articleType')
+    baseColour = request.args.get('baseColour')
+    season = request.args.get('season')
+    year = request.args.get('year')
+    usage = request.args.get('usage')
+
     if not query:
         return jsonify({"error": "Query parameter is required"}), 400
     ip = request.remote_addr
@@ -127,7 +136,7 @@ def search_api():
     except:
         country = 'Unknown'
         state = 'Unknown'
-    finalquery = f"{query} from {country} {state}"
+    finalquery = f"{query} from {country} {state}, for a {gender} in {masterCategory} - {subCategory}, article type: {articleType}, color: {baseColour}, season: {season}, year: {year}, usage: {usage}"
     print(finalquery)
     return find_relevant(finalquery)
     
