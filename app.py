@@ -116,11 +116,20 @@ def search_api():
     query = request.args.get('query')
     if not query:
         return jsonify({"error": "Query parameter is required"}), 400
-
-    results = [
-        {"productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer"}
-    ]
-    return find_relevant(query)
+    ip = request.remote_addr
+    if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
+        ip = '202.43.122.205'  # Use a public IP for testing local requests
+    try:
+        response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
+        data = response.json()
+        country = data.get('country')
+        state = data.get('regionName')
+    except:
+        country = 'Unknown'
+        state = 'Unknown'
+    finalquery = f"{query} from {country} {state}"
+    print(finalquery)
+    return find_relevant(finalquery)
     
 @app.route('/app', methods=['GET'])
 def app_page():
@@ -128,7 +137,7 @@ def app_page():
 
     ip = request.remote_addr
     if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
-        ip = '8.8.8.8'  # Use a public IP for testing local requests
+        ip = '202.43.122.205'  # Use a public IP for testing local requests
     try:
         response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
         data = response.json()
