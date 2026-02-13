@@ -3,11 +3,11 @@ import elasticsearch
 import flask
 import numpy as np
 
-mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
-mongo_db = mongo_client["VadaPavFassion"]
-mongo_collection = mongo_db["sureshites"]
+myclient = pymongo.MongoClient('mongodb://localhost:27017/')
+
+mydb = myclient['mydatabase']
 
 app = flask.Flask(__name__)
 @app.route('/', methods=['GET'])
 def home():
-    return "Welcome to VadaPavFassion API"
+    return flask.render_template('index.html')
