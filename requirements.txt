@@ -4,3 +4,4 @@ numpy
 elasticsearch
 sentence_transformers
 pandas
+jinja2

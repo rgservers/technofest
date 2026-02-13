@@ -3,6 +3,8 @@ import elasticsearch
 import flask
 import numpy as np
 
+elasticsearch_client = elasticsearch.Elasticsearch("http://localhost:9200")
+
 mainclient = pymongo.MongoClient("mongodb://localhost:27017/")
 maindb = mainclient["VadaPavFassion"]
 
