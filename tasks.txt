@@ -1,0 +1,11 @@
+- Create the vector database 
+- Update the UI
+- Add search paraments using elastic search
+- Map images to files and turn them into vectors
+- Add that as parameter in search
+- Create a UI rendering and simple product database
+- Polish and finsh pitch
+- SDG 12, 9, 10
+SDG 12	Return-rate framing
+SDG 9	Infrastructure change
+SDG 10	Region/culture-aware
