@@ -1,8 +1,13 @@
 flask
 pymongo
 numpy
-elasticsearch
 sentence_transformers
 pandas
 jinja2
-time
+transformers
+torch
+Pillow
+flask-login
+Flask-MongoEngine
+werkzeug
+flask-httpauth
