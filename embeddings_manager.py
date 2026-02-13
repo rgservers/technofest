@@ -19,10 +19,13 @@ for index, row in data.iterrows():
     if os.path.exists:
         try:
             vector_text = model.encode(row['productDisplayName'])
+        except:
+            print('error1')
+        try:
             collection.find_one_and_update({"id":id}, {'text_vector': vector_text})
             print(f'{id} is done')
         except:
-            print('error')
+            print('error2')
 
 
 
