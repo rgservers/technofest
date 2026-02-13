@@ -94,4 +94,20 @@ if __name__ == '__main__':
 @login_required
 def safe_page():
     return f"Welcome to the safe page, {current_user.id}! You are authorized to view this content."
+
+
+@app.route('/searchapi', methods=['GET'])
+@login_required
+def search_api():
+    query = request.args.get('query')
+    if not query:
+        return jsonify({"error": "Query parameter is required"}), 400
+
+    results = [
+        {"productDisplayName": "Sample Shirt", "masterCategory": "Apparel", "subCategory": "Topwear", "baseColour": "Blue", "season": "Summer"}
+    ]
+    return jsonify(results)
     
+@app.route('/app', methods=['GET'])
+def app_page():
+    return render_template('app.html')
