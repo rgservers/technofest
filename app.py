@@ -206,7 +206,7 @@ def app_page():
 
     ip = request.remote_addr
     if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
-        ip = '202.43.122.205'  # Use a public IP for testing local requests
+        ip = '202.43.122.205' 
     try:
         response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
         data = response.json()
