@@ -1,2 +1,5 @@
 /fashion-dataset/
 /static/product_images/
+__pycache__/
+*.pyc
+app.log
