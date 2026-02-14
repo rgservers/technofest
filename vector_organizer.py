@@ -26,7 +26,7 @@ def find_relevant(query_text, limit=1000):
         "combined_vector": 1,
         "_id": 0
     }
-    results = col1.find({}, projection)  # Fetch all items with vectors
+    results = col1.find({}, projection) 
     for doc in results:
         product_id = doc.get("id")
         vector = doc.get("combined_vector")
@@ -50,7 +50,6 @@ def find_relevant(query_text, limit=1000):
         similarity = util.cos_sim(embed_1, embed_2).item()
         similarities[product_id] = similarity
 
-    # Return top 10 most similar items
     return [[k, v] for k, v in heapq.nlargest(10, similarities.items(), key=lambda item: item[1])]
 if __name__ == "__main__":
     result = find_relevant("Stylish men's shirt")
