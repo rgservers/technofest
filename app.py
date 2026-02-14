@@ -58,25 +58,35 @@ def search():
         logger.debug(f"Search query: {query}")
         if query:
             try:
-                # Hit the /searchapi endpoint
-                api_url = f"http://localhost:5000/searchapi?query={query}"
-                logger.debug(f"Calling API: {api_url}")
-                response = requests.get(api_url)
-                logger.debug(f"API response status: {response.status_code}")
-                if response.status_code == 200:
-                    api_results = response.json()  # [[id, sim], ...]
-                    logger.info(f"API returned {len(api_results)} results")
-                    item_ids = [item[0] for item in api_results]
-                    if item_ids:
-                        items = list(col1.find({"id": {"$in": item_ids}}))
-                        logger.debug(f"Fetched {len(items)} items from DB")
-                        id_to_item = {item['id']: item for item in items}
-                        results = [id_to_item.get(id, {}) for id, sim in api_results]
-                        logger.info(f"Final results: {len(results)} items")
-                    else:
-                        results = []
+                # Construct final query similar to searchapi
+                ip = request.remote_addr
+                logger.info(f"User IP for search: {ip}")
+                if ip == '127.0.0.1' or ip.startswith('192.168.') or ip.startswith('10.'):
+                    ip = '202.43.122.205'  # Use a public IP for testing local requests
+                    logger.debug(f"Using public IP: {ip}")
+                try:
+                    logger.debug(f"Fetching geolocation for search")
+                    response = requests.get(f'http://ip-api.com/json/{ip}', timeout=5)
+                    data = response.json()
+                    country = data.get('country')
+                    state = data.get('regionName')
+                    logger.info(f"Search geolocation: Country={country}, State={state}")
+                except Exception as e:
+                    logger.error(f"Error in geolocation for search: {e}")
+                    country = 'Unknown'
+                    state = 'Unknown'
+                finalquery = f"{query} from {country} {state}"
+                logger.info(f"Final query constructed: {finalquery}")
+                api_results = find_relevant(finalquery)
+                logger.info(f"Search returned {len(api_results)} results")
+                item_ids = [item[0] for item in api_results]
+                if item_ids:
+                    items = list(col1.find({"id": {"$in": item_ids}}))
+                    logger.debug(f"Fetched {len(items)} items from DB")
+                    id_to_item = {item['id']: {k: v for k, v in item.items() if k != '_id'} for item in items}
+                    results = [id_to_item.get(id, {}) for id, sim in api_results]
+                    logger.info(f"Final results: {len(results)} items")
                 else:
-                    logger.warning(f"API returned status {response.status_code}")
                     results = []
             except Exception as e:
                 logger.error(f"Search error: {e}")
@@ -116,6 +126,9 @@ def get_product(product_id):
     else:
         logger.warning(f"Product {product_id} not found")
         return jsonify({"error": "Product not found"}), 404
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')

@@ -19,6 +19,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!searchResults || searchResults.length === 0) return;
 
+        // Filter out items without required fields
+        searchResults = searchResults.filter(item => item.productDisplayName && item.masterCategory && item.subCategory && item.baseColour && item.season);
+
+        if (searchResults.length === 0) return;
+
         const numItems = searchResults.length;
         const angleStep = (2 * Math.PI) / numItems;
 
@@ -55,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.productDisplayName.substring(0, 15) + '...' :
                 item.productDisplayName;
 
-            // Add tooltip
             const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
             title.textContent = `${item.productDisplayName}\nCategory: ${item.masterCategory} - ${item.subCategory}\nColor: ${item.baseColour}\nSeason: ${item.season}`;
 
